@@ -127,7 +127,7 @@ top10 = filtered_df.nlargest(10, sort_option)
 fig = px.bar(
     top10,
     x=sort_option,
-    y='Youtuber',
+    y='youtuber',
     orientation='h',
     color=sort_option,
     title="Top 10 Channels"
@@ -240,7 +240,7 @@ with col1:
     country_counts.columns = ['Country', 'Count']
     fig = px.bar(
         country_counts.head(10),
-        x='Country',
+        x='country',
         y='Count',
         title="Top Countries"
     )
