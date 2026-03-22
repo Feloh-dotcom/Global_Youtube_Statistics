@@ -29,7 +29,7 @@ def load_data():
     except:
         df = pd.read_csv("Global YouTube Statistics.csv", encoding='latin-1')
 
-    df.columns = df.columns.str.strip()
+    df.columns = df.columns.str.strip().str.lower()
 
     numeric_cols = [
         'subscribers','video views','uploads',
