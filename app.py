@@ -63,8 +63,8 @@ st.sidebar.header("Filters")
 
 countries = st.sidebar.multiselect(
     "Country",
-    df['Country'].dropna().unique(),
-    default=df['Country'].dropna().unique()
+    df['country'].dropna().unique(),
+    default=df['country'].dropna().unique()
 )
 
 categories = st.sidebar.multiselect(
