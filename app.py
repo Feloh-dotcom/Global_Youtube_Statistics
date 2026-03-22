@@ -173,25 +173,33 @@ st.header("Revenue Analysis")
 col1, col2 = st.columns(2)
 
 with col1:
-    fig = px.scatter(
-        filtered_df,
-        x='subscribers',
-        y='highest_monthly_earnings',
-        color='category',
-        title="Earnings vs Subscribers"
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    st.caption("Higher audience size drives revenue.")
+    scatter_data = filtered_df[['subscribers', 'highest_monthly_earnings', 'category']].dropna()
+    if not scatter_data.empty:
+        fig = px.scatter(
+            scatter_data,
+            x='subscribers',
+            y='highest_monthly_earnings',
+            color='category',
+            title="Earnings vs Subscribers"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption("Higher audience size drives revenue.")
+    else:
+        st.info("No data available for earnings analysis.")
 
 with col2:
-    fig = px.box(
-        filtered_df,
-        x='category',
-        y='highest_monthly_earnings',
-        title="Earnings by Category"
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    st.caption("📌 Entertainment categories dominate earnings.")
+    box_data = filtered_df[['category', 'highest_monthly_earnings']].dropna()
+    if not box_data.empty:
+        fig = px.box(
+            box_data,
+            x='category',
+            y='highest_monthly_earnings',
+            title="Earnings by Category"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption("📌 Entertainment categories dominate earnings.")
+    else:
+        st.info("No earnings data available by category.")
 
 # =========================
 # CONTENT STRATEGY
@@ -221,14 +229,18 @@ with col2:
 col3, col4 = st.columns(2)
 
 with col3:
-    fig = px.scatter(
-        filtered_df,
-        x='uploads',
-        y='video views',
-        color='category',
-        title="Uploads vs Views"
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    uploads_data = filtered_df[['uploads', 'video views', 'category']].dropna()
+    if not uploads_data.empty:
+        fig = px.scatter(
+            uploads_data,
+            x='uploads',
+            y='video views',
+            color='category',
+            title="Uploads vs Views"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No data available for uploads vs views analysis.")
 
 # =========================
 # GEOGRAPHIC INSIGHTS
@@ -249,31 +261,36 @@ with col1:
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    fig = px.scatter_geo(
-        filtered_df,
-        lat='latitude',
-        lon='longitude',
-        hover_name='youtuber',
-        size='subscribers',
-        color='category',
-        projection="natural earth",
-        title="Global Distribution"
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    geo_data = filtered_df[['latitude', 'longitude', 'youtuber', 'subscribers', 'category']].dropna()
+    if not geo_data.empty:
+        fig = px.scatter_geo(
+            geo_data,
+            lat='latitude',
+            lon='longitude',
+            hover_name='youtuber',
+            size='subscribers',
+            color='category',
+            projection="natural earth",
+            title="Global Distribution"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No geographic data available.")
 
 # =========================
 # CORRELATION
 # =========================
 st.header("Correlation Analysis")
 
-numeric_df = filtered_df.select_dtypes(include=np.number)
-corr = numeric_df.corr()
-
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.heatmap(corr, cmap='coolwarm', ax=ax)
-
-st.pyplot(fig)
-st.caption("Identifies relationships between key metrics.")
+numeric_df = filtered_df.select_dtypes(include=np.number).dropna(how='all')
+if not numeric_df.empty and numeric_df.shape[1] > 1:
+    corr = numeric_df.corr()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.heatmap(corr, cmap='coolwarm', ax=ax)
+    st.pyplot(fig)
+    st.caption("Identifies relationships between key metrics.")
+else:
+    st.info("Not enough numeric data for correlation analysis.")
 
 # =========================
 # EXPORT
