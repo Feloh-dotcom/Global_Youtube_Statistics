@@ -36,9 +36,8 @@ def load_data():
         'video_views_for_the_last_30_days',
         'lowest_monthly_earnings','highest_monthly_earnings',
         'lowest_yearly_earnings','highest_yearly_earnings',
-        'subscribers_for_last_30_days','Population',
-        'Unemployment rate','Urban_population',
-        'Latitude','Longitude'
+        'population','unemployment rate','urban_population',
+        'latitude','longitude'
     ]
     
     for col in numeric_cols:
@@ -47,7 +46,7 @@ def load_data():
 
     df.fillna({
         'category': 'Unknown',
-        'Country': 'Unknown',
+        'country': 'Unknown',
         'channel_type': 'Unknown'
     }, inplace=True)
 
@@ -154,14 +153,17 @@ with col1:
     st.caption("Strong positive relationship between subscribers and views.")
 
 with col2:
-    fig = px.histogram(
-        filtered_df,
-        x='subscribers_for_last_30_days',
-        nbins=30,
-        title="Subscriber Growth Distribution"
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    st.caption("Most channels experience moderate growth.")
+    hist_data = filtered_df[['video_views_for_the_last_30_days']].dropna()
+    if not hist_data.empty:
+        fig = px.histogram(
+            hist_data,
+            x='video_views_for_the_last_30_days',
+            nbins=30,
+            title="Video Views Growth (Last 30 Days)"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No data available for video views growth visualization.")
 
 # =========================
 # REVENUE ANALYSIS
@@ -236,8 +238,8 @@ st.header("Geographic Insights")
 col1, col2 = st.columns(2)
 
 with col1:
-    country_counts = filtered_df['Country'].value_counts().reset_index()
-    country_counts.columns = ['Country', 'Count']
+    country_counts = filtered_df['country'].value_counts().reset_index()
+    country_counts.columns = ['country', 'Count']
     fig = px.bar(
         country_counts.head(10),
         x='country',
@@ -249,9 +251,9 @@ with col1:
 with col2:
     fig = px.scatter_geo(
         filtered_df,
-        lat='Latitude',
-        lon='Longitude',
-        hover_name='Youtuber',
+        lat='latitude',
+        lon='longitude',
+        hover_name='youtuber',
         size='subscribers',
         color='category',
         projection="natural earth",
