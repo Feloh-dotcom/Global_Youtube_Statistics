@@ -80,7 +80,7 @@ channel_types = st.sidebar.multiselect(
 )
 
 filtered_df = df[
-    (df['Country'].isin(countries)) &
+    (df['country'].isin(countries)) &
     (df['category'].isin(categories)) &
     (df['channel_type'].isin(channel_types))
 ]
